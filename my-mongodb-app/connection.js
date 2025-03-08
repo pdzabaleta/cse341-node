@@ -1,31 +1,34 @@
+// Load environment variables from the .env file
+require('dotenv').config();
+
 const { MongoClient } = require("mongodb");
 
 let client;
 
 async function connectToMongoDB() {
-    const uri = "mongodb+srv://pdzabaleta:Nieve.01@cluster0.0lrgm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+    const uri = process.env.MONGO_URI; // Use the MongoDB connection URI from the .env file
     client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
     try {
         await client.connect();
-        console.log("✅ Conectado a MongoDB Atlas");
+        console.log("✅ Connected to MongoDB Atlas");
     } catch (error) {
-        console.error("❌ Error al conectar:", error);
+        console.error("❌ Error connecting:", error);
     }
 }
 
 async function listDatabases() {
     try {
         const databasesList = await client.db().admin().listDatabases();
-        console.log("📂 Bases de datos:");
+        console.log("📂 Databases:");
         databasesList.databases.forEach(db => console.log(` - ${db.name}`));
     } catch (error) {
-        console.error("❌ Error al obtener bases de datos:", error);
+        console.error("❌ Error getting databases:", error);
     }
 }
 
 module.exports = {
     connectToMongoDB,
     listDatabases,
-    client // Exportamos el cliente para usarlo en otro lugar si es necesario
+    client // Export the client if you need to use it elsewhere
 };
