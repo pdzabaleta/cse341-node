@@ -1,29 +1,29 @@
 const express = require('express');
 const app = express();
-const { connectToMongoDB, listDatabases, client } = require('./my-mongodb-app');  // Importamos la conexión
+const { connectToMongoDB, listDatabases, client } = require('./my-mongodb-app/connection');  // Importing the connection
 
-// Llamamos a la función para conectar a MongoDB
+// Call the function to connect to MongoDB
 connectToMongoDB();
 
-// Una ruta de ejemplo
+// Example route
 app.get('/', (req, res) => {
-    res.send('¡Hola, mundo!');
+    res.send('Hello, world!');
 });
 
-// Una ruta para listar bases de datos
+// Route to list databases
 app.get('/databases', async (req, res) => {
-    await listDatabases(); // Lista las bases de datos en la consola
-    res.send('Bases de datos mostradas en la consola');
+    await listDatabases(); // List databases in the console
+    res.send('Databases displayed in the console');
 });
 
-// Servidor corriendo en el puerto 3000
-app.listen(3000, () => {
-    console.log('Servidor corriendo en el puerto 3000');
+// Server running on port 3000, listening on all network interfaces
+app.listen(3000, '0.0.0.0', () => {
+    console.log('Server running on port 3000');
 });
 
-// Cuando detengas el servidor, cerramos la conexión a MongoDB
+// When the server is stopped, close the MongoDB connection
 process.on('SIGINT', async () => {
     await client.close();
-    console.log('❌ Conexión cerrada');
+    console.log('❌ Connection closed');
     process.exit(0);
 });
